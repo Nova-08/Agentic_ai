@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Agentic Outage Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .header p {
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .interface-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .interface-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .interface-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        .interface-btn.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .interface-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .interface-panel.active {
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online { background: #27ae60; }
+        .status-busy { background: #f39c12; }
+        .status-offline { background: #e74c3c; }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #27ae60;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        .notification.warning {
+            background: #f39c12;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            color: #2c3e50;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .close-btn:hover {
+            color: #e74c3c;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            transition: width 0.3s ease;
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #27ae60;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #e74c3c;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #f39c12;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #3498db;
+            color: #0c5460;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .interface-selector {
+                flex-direction: column;
+            }
+
+            .interface-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚡ Advanced Agentic Outage Management System</h1>
+            <p>Intelligent power outage detection, crew dispatch, and customer service management</p>
+        </div>
+
+        <!-- Interface Selector -->
+        <div class="interface-selector">
+            <button class="interface-btn active" onclick="showInterface('dashboard')">🏠 Dashboard</button>
+            <button class="interface-btn" onclick="showInterface('crew')">🛠️ Crew Interface</button>
+            <button class="interface-btn" onclick="showInterface('customer')">👤 Customer Portal</button>
+            <button class="interface-btn" onclick="showInterface('admin')">⚙️ Admin Panel</button>
+        </div>
+
+        <!-- Dashboard Interface -->
+        <div id="dashboard" class="interface-panel active">
+            <h2>📊 System Dashboard</h2>
+            
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3 id="active-outages">12</h3>
+                    <p>Active Outages</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="crews-dispatched">8</h3>
+                    <p>Crews Dispatched</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="customers-affected">2,453</h3>
+                    <p>Customers Affected</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="avg-response-time">18 min</h3>
+                    <p>Avg Response Time</p>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('outages')">Current Outages</button>
+                <button class="tab" onclick="showTab('crews')">Crew Status</button>
+                <button class="tab" onclick="showTab('analytics')">Analytics</button>
+            </div>
+
+            <div id="outages" class="tab-content active">
+                <div class="table-container">
+                    <table id="outages-table">
+                        <thead>
+                            <tr>
+                                <th>Service ID</th>
+                                <th>Customer</th>
+                                <th>Component</th>
+                                <th>Status</th>
+                                <th>Detection Time</th>
+                                <th>Assigned Crew</th>
+                                <th>ETA</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic content will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn" onclick="processOutages()">🔄 Process New Outages</button>
+                <button class="btn btn-info" onclick="generateReport()">📊 Generate Report</button>
+            </div>
+
+            <div id="crews" class="tab-content">
+                <div class="table-container">
+                    <table id="crews-table">
+                        <thead>
+                            <tr>
+                                <th>Crew ID</th>
+                                <th>Crew Name</th>
+                                <th>Status</th>
+                                <th>Location</th>
+                                <th>Current Assignment</th>
+                                <th>Performance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic content will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="analytics" class="tab-content">
+                <h3>📈 Performance Analytics</h3>
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>94.5%</h3>
+                        <p>System Reliability</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>2.3 hrs</h3>
+                        <p>Avg Resolution Time</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>4.7/5.0</h3>
+                        <p>Customer Satisfaction</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>89%</h3>
+                        <p>First-time Fix Rate</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <strong>AI Analysis:</strong> System performance is above average. Recommend focusing on reducing response time in downtown area.
+                </div>
+            </div>
+        </div>
+
+        <!-- Crew Interface -->
+        <div id="crew" class="interface-panel">
+            <h2>🛠️ Crew Management Interface</h2>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showCrewTab('assignments')">📋 My Assignments</button>
+                <button class="tab" onclick="showCrewTab('profile')">👤 Profile</button>
+                <button class="tab" onclick="showCrewTab('tools')">🔧 Tools</button>
+                <button class="tab" onclick="showCrewTab('reports')">📊 Reports</button>
+            </div>
+
+            <div id="crew-assignments" class="tab-content active">
+                <div class="form-group">
+                    <label>Crew Status:</label>
+                    <select id="crew-status" onchange="updateCrewStatus()">
+                        <option value="available">🟢 Available</option>
+                        <option value="busy">🟡 Busy</option>
+                        <option value="offline">🔴 Offline</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table id="crew-assignments-table">
+                        <thead>
+                            <tr>
+                                <th>Service ID</th>
+                                <th>Customer</th>
+                                <th>Component</th>
+                                <th>Priority</th>
+                                <th>Location</th>
+                                <th>ETA</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <button class="btn" onclick="refreshAssignments()">🔄 Refresh Assignments</button>
+                <button class="btn btn-info" onclick="openNavigation()">🗺️ Open Navigation</button>
+                <button class="btn btn-warning" onclick="updateStatus()">✅ Update Status</button>
+            </div>
+
+            <div id="crew-profile" class="tab-content">
+                <h3>👤 Crew Profile</h3>
+                <div class="form-group">
+                    <label>Crew Name:</label>
+                    <input type="text" id="crew-name" value="Alpha Team" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Crew ID:</label>
+                    <input type="text" id="crew-id" value="CREW-001" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Supervisor:</label>
+                    <input type="text" id="crew-supervisor" value="John Smith" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Location:</label>
+                    <input type="text" id="crew-location" value="Downtown Station">
+                </div>
+                <div class="form-group">
+                    <label>Specialization:</label>
+                    <input type="text" id="crew-specialization" value="High Voltage">
+                </div>
+                
+                <button class="btn" onclick="saveCrewProfile()">💾 Save Profile</button>
+                <button class="btn btn-info" onclick="viewPerformance()">📊 View Performance</button>
+            </div>
+
+            <div id="crew-tools" class="tab-content">
+                <h3>🔧 Tools & Resources</h3>
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>🗺️</h3>
+                        <p>Maps & Navigation</p>
+                        <button class="btn" onclick="openMaps()" style="margin-top: 10px;">Open</button>
+                    </div>
+                    <div class="stat-card">
+                        <h3>📞</h3>
+                        <p>Emergency Contacts</p>
+                        <button class="btn" onclick="showEmergencyContacts()" style="margin-top: 10px;">View</button>
+                    </div>
+                    <div class="stat-card">
+                        <h3>📋</h3>
+                        <p>Safety Checklists</p>
+                        <button class="btn" onclick="showChecklists()" style="margin-top: 10px;">Open</button>
+                    </div>
+                    <div class="stat-card">
+                        <h3>📸</h3>
+                        <p>Photo Upload</p>
+                        <button class="btn" onclick="uploadPhotos()" style="margin-top: 10px;">Upload</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="crew-reports" class="tab-content">
+                <h3>📊 Performance Reports</h3>
+                <div class="alert alert-success">
+                    <strong>Performance Summary:</strong><br>
+                    • Assignments Completed: 15<br>
+                    • Average Resolution Time: 2.5 hours<br>
+                    • Customer Satisfaction: 4.8/5.0<br>
+                    • Success Rate: 95%
+                </div>
+
+                <div class="form-group">
+                    <label>Report Period:</label>
+                    <select id="report-period">
+                        <option value="today">Today</option>
+                        <option value="week" selected>Last 7 days</option>
+                        <option value="month">Last 30 days</option>
+                        <option value="quarter">Last 90 days</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="generateCrewReport()">📊 Generate Report</button>
+                <button class="btn btn-info" onclick="exportData()">📥 Export Data</button>
+            </div>
+        </div>
+
+        <!-- Customer Interface -->
+        <div id="customer" class="interface-panel">
+            <h2>👤 Customer Service Portal</h2>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showCustomerTab('dashboard')">🏠 Dashboard</button>
+                <button class="tab" onclick="showCustomerTab('outages')">⚡ Outages</button>
+                <button class="tab" onclick="showCustomerTab('billing')">💳 Billing</button>
+                <button class="tab" onclick="showCustomerTab('profile')">👤 Profile</button>
+                <button class="tab" onclick="showCustomerTab('support')">💬 Support</button>
+            </div>
+
+            <div id="customer-dashboard" class="tab-content active">
+                <h3>Welcome back, John Doe!</h3>
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>$127.45</h3>
+                        <p>Current Bill</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>1,247 kWh</h3>
+                        <p>Usage This Month</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3><span class="status-indicator status-online"></span>Normal</h3>
+                        <p>Service Status</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Sep 15</h3>
+                        <p>Next Bill Date</p>
+                    </div>
+                </div>
+
+                <h3>Quick Actions</h3>
+                <button class="btn" onclick="viewBill()">📊 View Bill</button>
+                <button class="btn btn-danger" onclick="reportOutage()">⚡ Report Outage</button>
+                <button class="btn btn-info" onclick="contactSupport()">📞 Contact Support</button>
+                <button class="btn btn-warning" onclick="requestService()">🔧 Request Service</button>
+            </div>
+
+            <div id="customer-outages" class="tab-content">
+                <h3>⚡ Report & Track Outages</h3>
+                
+                <div class="form-group">
+                    <label>Outage Type:</label>
+                    <select id="outage-type">
+                        <option value="power">Power Outage</option>
+                        <option value="partial">Partial Outage</option>
+                        <option value="voltage">Voltage Issues</option>
+                        <option value="flickering">Flickering Lights</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="outage-description" rows="4" placeholder="Please describe the outage..."></textarea>
+                </div>
+
+                <button class="btn btn-danger" onclick="submitOutageReport()">🚨 Report Outage</button>
+                <button class="btn btn-info" onclick="viewOutageMap()">📍 Check Outage Map</button>
+
+                <h4>Current Outages in Your Area</h4>
+                <div class="table-container">
+                    <table id="area-outages-table">
+                        <thead>
+                            <tr>
+                                <th>Area</th>
+                                <th>Type</th>
+                                <th>Reported</th>
+                                <th>Est. Restoration</th>
+                                <th>Status</th>
+                                <th>Customers Affected</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Downtown</td>
+                                <td>Power Outage</td>
+                                <td>Aug 20 14:30</td>
+                                <td>Aug 20 18:00</td>
+                                <td>In Progress</td>
+                                <td>1,247</td>
+                            </tr>
+                            <tr>
+                                <td>Westside</td>
+                                <td>Voltage Issues</td>
+                                <td>Aug 20 13:15</td>
+                                <td>Aug 20 16:30</td>
+                                <td>Investigating</td>
+                                <td>523</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="customer-billing" class="tab-content">
+                <h3>💳 Billing Information</h3>
+                
+                <div class="alert alert-info">
+                    <strong>Current Bill Details:</strong><br>
+                    Billing Period: Jul 15 - Aug 15, 2025<br>
+                    Total Amount: $127.45<br>
+                    Due Date: September 15, 2025<br>
+                    Usage: 1,247 kWh
+                </div>
+
+                <button class="btn" onclick="payBill()">💳 Pay Now</button>
+                <button class="btn btn-info" onclick="viewDetailedBill()">📄 View Detailed Bill</button>
+                <button class="btn btn-warning" onclick="emailBill()">📧 Email Bill</button>
+
+                <h4>Usage History</h4>
+                <div class="table-container">
+                    <table id="usage-history-table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Usage (kWh)</th>
+                                <th>Cost</th>
+                                <th>Avg Daily</th>
+                                <th>Days in Period</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Aug 2025</td><td>1,247</td><td>$127.45</td><td>40.2</td><td>31</td></tr>
+                            <tr><td>Jul 2025</td><td>1,356</td><td>$139.12</td><td>43.7</td><td>31</td></tr>
+                            <tr><td>Jun 2025</td><td>1,123</td><td>$115.67</td><td>37.4</td><td>30</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="customer-profile" class="tab-content">
+                <h3>👤 Account Information</h3>
+                
+                <div class="form-group">
+                    <label>Customer Name:</label>
+                    <input type="text" id="customer-name" value="John Doe">
+                </div>
+                
+                <div class="form-group">
+                    <label>Account Number:</label>
+                    <input type="text" id="account-number" value="ACC-12345-678" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email Address:</label>
+                    <input type="email" id="customer-email" value="john.doe@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Phone Number:</label>
+                    <input type="tel" id="customer-phone" value="(555) 123-4567">
+                </div>
+                
+                <div class="form-group">
+                    <label>Service Address:</label>
+                    <textarea id="service-address" rows="2">123 Main Street, Anytown, ST 12345</textarea>
+                </div>
+
+                <button class="btn" onclick="saveCustomerProfile()">💾 Save Changes</button>
+                <button class="btn btn-warning" onclick="changePassword()">🔒 Change Password</button>
+            </div>
+
+            <div id="customer-support" class="tab-content">
+                <h3>💬 Customer Support</h3>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>📞</h3>
+                        <p>Call Support<br>1-800-POWER-ON</p>
+                        <button class="btn" onclick="callSupport()" style="margin-top: 10px;">Call Now</button>
+                    </div>
+                    <div class="stat-card">
+                        <h3>💬</h3>
+                        <p>Live Chat<br>< 5 min wait</p>
+                        <button class="btn" onclick="startChat()" style="margin-top: 10px;">Start Chat</button>
+                    </div>
+                    <div class="stat-card">
+                        <h3>📧</h3>
+                        <p>Email Support<br>24hr response</p>
+                        <button class="btn" onclick="emailSupport()" style="margin-top: 10px;">Send Email</button>
+                    </div>
+                    <div class="stat-card">
+                        <h3>🎫</h3>
+                        <p>Submit Ticket<br>Track online</p>
+                        <button class="btn" onclick="submitTicket()" style="margin-top: 10px;">Create Ticket</button>
+                    </div>
+                </div>
+
+                <h4>Frequently Asked Questions</h4>
+                <div class="alert alert-info">
+                    <strong>Q: How do I report an outage?</strong><br>
+                    A: Use our app, website, or call our 24/7 outage hotline.<br><br>
+                    <strong>Q: How long do outages typically last?</strong><br>
+                    A: Most outages are restored within 2-4 hours.<br><br>
+                    <strong>Q: How can I pay my bill?</strong><br>
+                    A: You can pay online, by phone, mail, or in person at our office.
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Interface -->
+        <div id="admin" class="interface-panel">
+            <h2>⚙️ System Administration</h2>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showAdminTab('monitoring')">📊 System Monitoring</button>
+                <button class="tab" onclick="showAdminTab('settings')">⚙️ Settings</button>
+                <button class="tab" onclick="showAdminTab('users')">👥 User Management</button>
+                <button class="tab" onclick="showAdminTab('logs')">📝 System Logs</button>
+            </div>
+
+            <div id="admin-monitoring" class="tab-content active">
+                <h3>📊 System Health Monitoring</h3>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>98.7%</h3>
+                        <p>System Uptime</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>2,453</h3>
+                        <p>Active Customers</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>15</h3>
+                        <p>Active Crews</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>0.2s</h3>
+                        <p>Avg Response Time</p>
+                    </div>
+                </div>
+
+                <h4>System Status</h4>
+                <div class="alert alert-success">
+                    <span class="status-indicator status-online"></span>
+                    All systems operational
+                </div>
+
+                <h4>Recent System Activity</h4>
+                <div id="system-logs">
+                    <p>✅ 2025-08-20 22:15 - Email system operational</p>
+                    <p>⚡ 2025-08-20 22:10 - Outage processed: SVC-A1B2C3D4</p>
+                    <p>👷 2025-08-20 22:05 - Crew Alpha Team dispatched</p>
+                    <p>🤖 2025-08-20 22:00 - AI analysis completed</p>
+                </div>
+            </div>
+
+            <div id="admin-settings" class="tab-content">
+                <h3>⚙️ System Configuration</h3>
+                
+                <div class="form-group">
+                    <label>Auto-monitoring Interval (seconds):</label>
+                    <input type="number" id="monitoring-interval" value="30">
+                </div>
+                
+                <div class="form-group">
+                    <label>Email Notifications:</label>
+                    <select id="email-notifications">
+                        <option value="enabled">Enabled</option>
+                        <option value="disabled">Disabled</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>AI Analysis:</label>
+                    <select id="ai-analysis">
+                        <option value="enabled">Enabled</option>
+                        <option value="disabled">Disabled</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="saveSystemSettings()">💾 Save Settings</button>
+                <button class="btn btn-warning" onclick="restartSystem()">🔄 Restart System</button>
+            </div>
+
+            <div id="admin-users" class="tab-content">
+                <h3>👥 User Management</h3>
+                
+                <div class="table-container">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ADMIN-001</td>
+                                <td>System Admin</td>
+                                <td>Administrator</td>
+                                <td><span class="status-indicator status-online"></span>Active</td>
+                                <td>2025-08-20 22:00</td>
+                                <td>
+                                    <button class="btn btn-warning">Edit</button>
+                                    <button class="btn btn-danger">Disable</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CREW-001</td>
+                                <td>Alpha Team</td>
+                                <td>Crew</td>
+                                <td><span class="status-indicator status-online"></span>Active</td>
+                                <td>2025-08-20 21:45</td>
+                                <td>
+                                    <button class="btn btn-warning">Edit</button>
+                                    <button class="btn btn-danger">Disable</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <button class="btn" onclick="addUser()">➕ Add New User</button>
+            </div>
+
+            <div id="admin-logs" class="tab-content">
+                <h3>📝 System Logs</h3>
+                
+                <div class="form-group">
+                    <label>Log Level:</label>
+                    <select id="log-level">
+                        <option value="all">All Levels</option>
+                        <option value="error">Errors Only</option>
+                        <option value="warning">Warnings</option>
+                        <option value="info">Information</option>
+                    </select>
+                </div>
+
+                <div id="system-logs-detailed">
+                    <div class="alert alert-info">
+                        <strong>INFO</strong> - 2025-08-20 22:15:30 - System monitoring started
+                    </div>
+                    <div class="alert alert-success">
+                        <strong>SUCCESS</strong> - 2025-08-20 22:14:45 - Outage SVC-A1B2C3D4 processed successfully
+                    </div>
+                    <div class="alert alert-warning">
+                        <strong>WARNING</strong> - 2025-08-20 22:13:20 - High system load detected
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>INFO</strong> - 2025-08-20 22:12:10 - Email notification sent to supervisor
+                    </div>
+                </div>
+
+                <button class="btn" onclick="refreshLogs()">🔄 Refresh Logs</button>
+                <button class="btn btn-info" onclick="exportLogs()">📥 Export Logs</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Modals -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Modal Title</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- Modal content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state management
+        let systemState = {
+            outages: [
+                {
+                    serviceId: 'SVC-A1B2C3D4',
+                    customer: 'John Smith',
+                    component: 'Transformer T-101',
+                    status: 'In Progress',
+                    detectionTime: '2025-08-20 14:30',
+                    assignedCrew: 'Alpha Team',
+                    eta: '25 min'
+                },
+                {
+                    serviceId: 'SVC-B5E6F7G8',
+                    customer: 'Downtown Mall',
+                    component: 'Circuit Breaker CB-205',
+                    status: 'Pending',
+                    detectionTime: '2025-08-20 15:15',
+                    assignedCrew: 'Beta Team',
+                    eta: '18 min'
+                }
+            ],
+            crews: [
+                {
+                    crewId: 'CREW-001',
+                    name: 'Alpha Team',
+                    status: 'busy',
+                    location: 'Downtown Station',
+                    assignment: 'SVC-A1B2C3D4',
+                    performance: '4.8/5.0'
+                },
+                {
+                    crewId: 'CREW-002',
+                    name: 'Beta Team',
+                    status: 'available',
+                    location: 'North Station',
+                    assignment: 'None',
+                    performance: '4.5/5.0'
+                }
+            ],
+            customers: [
+                {
+                    customerId: 'CUST-12345',
+                    name: 'John Doe',
+                    accountNumber: 'ACC-12345-678',
+                    email: 'john.doe@email.com',
+                    phone: '(555) 123-4567',
+                    serviceAddress: '123 Main Street, Anytown, ST 12345',
+                    currentBill: 127.45,
+                    usage: 1247,
+                    status: 'normal'
+                }
+            ],
+            monitoring: true,
+            processedCount: 0
+        };
+
+        // Utility functions
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function generateServiceId() {
+            return 'SVC-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+
+        function getCurrentTime() {
+            return new Date().toLocaleString();
+        }
+
+        // Interface management
+        function showInterface(interfaceName) {
+            // Hide all panels
+            document.querySelectorAll('.interface-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Show selected panel
+            document.getElementById(interfaceName).classList.add('active');
+            
+            // Update buttons
+            document.querySelectorAll('.interface-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Initialize interface-specific data
+            if (interfaceName === 'dashboard') {
+                updateDashboard();
+            } else if (interfaceName === 'crew') {
+                updateCrewInterface();
+            } else if (interfaceName === 'customer') {
+                updateCustomerInterface();
+            } else if (interfaceName === 'admin') {
+                updateAdminInterface();
+            }
+        }
+
+        // Tab management
+        function showTab(tabName) {
+            const parentPanel = event.target.closest('.interface-panel');
+            
+            // Hide all tab contents in this panel
+            parentPanel.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            parentPanel.querySelector(`#${tabName}`).classList.add('active');
+            
+            // Update tab buttons
+            parentPanel.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function showCrewTab(tabName) {
+            showTab(`crew-${tabName}`);
+        }
+
+        function showCustomerTab(tabName) {
+            showTab(`customer-${tabName}`);
+        }
+
+        function showAdminTab(tabName) {
+            showTab(`admin-${tabName}`);
+        }
+
+        // Dashboard functions
+        function updateDashboard() {
+            // Update statistics
+            document.getElementById('active-outages').textContent = systemState.outages.length;
+            document.getElementById('crews-dispatched').textContent = systemState.crews.filter(c => c.status === 'busy').length;
+            document.getElementById('customers-affected').textContent = '2,453';
+            document.getElementById('avg-response-time').textContent = '18 min';
+
+            // Update outages table
+            updateOutagesTable();
+            updateCrewsTable();
+        }
+
+        function updateOutagesTable() {
+            const tbody = document.querySelector('#outages-table tbody');
+            tbody.innerHTML = '';
+            
+            systemState.outages.forEach(outage => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${outage.serviceId}</td>
+                    <td>${outage.customer}</td>
+                    <td>${outage.component}</td>
+                    <td><span class="status-indicator ${getStatusClass(outage.status)}"></span>${outage.status}</td>
+                    <td>${outage.detectionTime}</td>
+                    <td>${outage.assignedCrew}</td>
+                    <td>${outage.eta}</td>
+                    <td>
+                        <button class="btn" onclick="viewOutageDetails('${outage.serviceId}')">📋 Details</button>
+                        <button class="btn btn-info" onclick="viewAIAnalysis('${outage.serviceId}')">🤖 AI Analysis</button>
+                    </td>
+                `;
+            });
+        }
+
+        function updateCrewsTable() {
+            const tbody = document.querySelector('#crews-table tbody');
+            tbody.innerHTML = '';
+            
+            systemState.crews.forEach(crew => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${crew.crewId}</td>
+                    <td>${crew.name}</td>
+                    <td><span class="status-indicator ${getStatusClass(crew.status)}"></span>${crew.status}</td>
+                    <td>${crew.location}</td>
+                    <td>${crew.assignment}</td>
+                    <td>${crew.performance}</td>
+                    <td>
+                        <button class="btn" onclick="viewCrewDetails('${crew.crewId}')">📋 Details</button>
+                        <button class="btn btn-info" onclick="assignCrew('${crew.crewId}')">📍 Assign</button>
+                    </td>
+                `;
+            });
+        }
+
+        function getStatusClass(status) {
+            const statusMap = {
+                'available': 'status-online',
+                'normal': 'status-online',
+                'busy': 'status-busy',
+                'in progress': 'status-busy',
+                'pending': 'status-offline',
+                'offline': 'status-offline'
+            };
+            return statusMap[status.toLowerCase()] || 'status-offline';
+        }
+
+        // Processing functions
+        function processOutages() {
+            showNotification('Processing outages...', 'info');
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                const newOutage = {
+                    serviceId: generateServiceId(),
+                    customer: 'New Customer ' + (systemState.processedCount + 1),
+                    component: 'Component-' + Math.floor(Math.random() * 1000),
+                    status: 'Pending',
+                    detectionTime: getCurrentTime(),
+                    assignedCrew: 'Auto-assigned',
+                    eta: Math.floor(Math.random() * 60) + ' min'
+                };
+                
+                systemState.outages.push(newOutage);
+                systemState.processedCount++;
+                
+                updateOutagesTable();
+                showNotification(`New outage processed: ${newOutage.serviceId}`, 'success');
+                
+                // Simulate email sending
+                setTimeout(() => {
+                    showNotification(`Emails sent for ${newOutage.serviceId}`, 'success');
+                }, 1000);
+            }, 2000);
+        }
+
+        function generateReport() {
+            showNotification('Generating comprehensive report...', 'info');
+            
+            setTimeout(() => {
+                showModal('📊 System Report', `
+                    <div class="alert alert-info">
+                        <h4>Outage Management Report</h4>
+                        <p><strong>Report Generated:</strong> ${getCurrentTime()}</p>
+                        <p><strong>Total Outages:</strong> ${systemState.outages.length}</p>
+                        <p><strong>Active Crews:</strong> ${systemState.crews.length}</p>
+                        <p><strong>System Uptime:</strong> 98.7%</p>
+                        <p><strong>Average Resolution Time:</strong> 2.3 hours</p>
+                        <p><strong>Customer Satisfaction:</strong> 4.7/5.0</p>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 87%"></div>
+                    </div>
+                    <p>System Performance: 87% - Excellent</p>
+                `);
+                
+                showNotification('Report generated successfully!', 'success');
+            }, 1500);
+        }
+
+        // Crew interface functions
+        function updateCrewInterface() {
+            updateCrewAssignmentsTable();
+        }
+
+        function updateCrewAssignmentsTable() {
+            const tbody = document.querySelector('#crew-assignments-table tbody');
+            tbody.innerHTML = '';
+            
+            // Show assignments for current crew
+            const crewAssignments = systemState.outages.filter(o => o.assignedCrew === 'Alpha Team');
+            
+            crewAssignments.forEach(assignment => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${assignment.serviceId}</td>
+                    <td>${assignment.customer}</td>
+                    <td>${assignment.component}</td>
+                    <td>High</td>
+                    <td>${assignment.customer} Area</td>
+                    <td>${assignment.eta}</td>
+                    <td>
+                        <button class="btn" onclick="updateAssignmentStatus('${assignment.serviceId}')">✅ Update</button>
+                        <button class="btn btn-info" onclick="viewLocation('${assignment.serviceId}')">📍 Location</button>
+                    </td>
+                `;
+            });
+        }
+
+        function updateCrewStatus() {
+            const status = document.getElementById('crew-status').value;
+            showNotification(`Crew status updated to: ${status}`, 'success');
+        }
+
+        function refreshAssignments() {
+            showNotification('Refreshing assignments...', 'info');
+            setTimeout(() => {
+                updateCrewAssignmentsTable();
+                showNotification('Assignments refreshed successfully', 'success');
+            }, 1000);
+        }
+
+        function openNavigation() {
+            showNotification('Opening navigation in maps...', 'info');
+            // In a real app, this would open Google Maps
+            setTimeout(() => {
+                showNotification('Maps opened successfully', 'success');
+            }, 500);
+        }
+
+        function updateStatus() {
+            showModal('Update Assignment Status', `
+                <div class="form-group">
+                    <label>Select Status:</label>
+                    <select id="status-update">
+                        <option value="assigned">Assigned</option>
+                        <option value="en-route">En Route</option>
+                        <option value="on-site">On Site</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="needs-support">Requires Support</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notes:</label>
+                    <textarea id="status-notes" rows="3" placeholder="Add any relevant notes..."></textarea>
+                </div>
+                <button class="btn" onclick="saveStatusUpdate()">💾 Save Status</button>
+            `);
+        }
+
+        function saveStatusUpdate() {
+            const status = document.getElementById('status-update').value;
+            const notes = document.getElementById('status-notes').value;
+            
+            showNotification(`Status updated to: ${status}`, 'success');
+            closeModal();
+        }
+
+        function saveCrewProfile() {
+            showNotification('Crew profile saved successfully!', 'success');
+        }
+
+        function viewPerformance() {
+            showModal('📊 Performance Metrics', `
+                <div class="alert alert-success">
+                    <h4>Current Period Performance:</h4>
+                    <p><strong>📊 Assignments Completed:</strong> 15</p>
+                    <p><strong>⏱️ Average Resolution Time:</strong> 2.5 hours</p>
+                    <p><strong>⭐ Customer Satisfaction:</strong> 4.8/5.0</p>
+                    <p><strong>🎯 Success Rate:</strong> 95%</p>
+                    <p><strong>📈 Efficiency Rating:</strong> Excellent</p>
+                </div>
+                <div class="alert alert-info">
+                    <h4>Recent Achievements:</h4>
+                    <p>✅ Fastest Response Time (Last Week)</p>
+                    <p>✅ Zero Safety Incidents (30 Days)</p>
+                    <p>✅ Customer Commendation (3 Reviews)</p>
+                </div>
+            `);
+        }
+
+        function generateCrewReport() {
+            showNotification('Generating crew performance report...', 'info');
+            setTimeout(() => {
+                showNotification('Report generated and ready for download', 'success');
+            }, 1500);
+        }
+
+        function exportData() {
+            showNotification('Exporting crew data...', 'info');
+            setTimeout(() => {
+                showNotification('Data exported successfully', 'success');
+            }, 1000);
+        }
+
+        // Tool functions
+        function openMaps() {
+            showNotification('Opening maps application...', 'info');
+        }
+
+        function showEmergencyContacts() {
+            showModal('📞 Emergency Contacts', `
+                <div class="alert alert-danger">
+                    <h4>Emergency Contacts:</h4>
+                    <p><strong>🚨 Emergency Services:</strong> 911</p>
+                    <p><strong>⚡ Control Center:</strong> (555) 123-4567</p>
+                    <p><strong>👷 Supervisor:</strong> (555) 234-5678</p>
+                    <p><strong>🔧 Maintenance:</strong> (555) 345-6789</p>
+                    <p><strong>🚑 Medical Emergency:</strong> (555) 456-7890</p>
+                    <p><strong>24/7 Support Hotline:</strong> (555) 567-8901</p>
+                </div>
+            `);
+        }
+
+        function showChecklists() {
+            showModal('📋 Safety Checklists', `
+                <div class="alert alert-warning">
+                    <h4>Pre-Work Safety Checklist:</h4>
+                    <p>☐ PPE Check (Hard hat, gloves, safety glasses)</p>
+                    <p>☐ Vehicle inspection completed</p>
+                    <p>☐ Tools and equipment verified</p>
+                    <p>☐ Weather conditions assessed</p>
+                    <p>☐ Site hazards identified</p>
+                    <p>☐ Emergency contacts confirmed</p>
+                    <p>☐ Communication devices tested</p>
+                    <p>☐ Work permit obtained (if required)</p>
+                </div>
+            `);
+        }
+
+        function uploadPhotos() {
+            showNotification('Opening photo upload interface...', 'info');
+        }
+
+        // Customer interface functions
+        function updateCustomerInterface() {
+            // Update customer dashboard with current data
+            const customer = systemState.customers[0];
+            document.getElementById('customer-name').value = customer.name;
+            document.getElementById('account-number').value = customer.accountNumber;
+            document.getElementById('customer-email').value = customer.email;
+            document.getElementById('customer-phone').value = customer.phone;
+        }
+
+        function viewBill() {
+            showModal('📄 Current Bill Details', `
+                <div class="alert alert-info">
+                    <h4>Monthly Electric Bill</h4>
+                    <p><strong>Customer:</strong> John Doe</p>
+                    <p><strong>Account:</strong> ACC-12345-678</p>
+                    <p><strong>Billing Period:</strong> July 15 - August 15, 2025</p>
+                    <p><strong>Current Reading:</strong> 45,678 kWh</p>
+                    <p><strong>Previous Reading:</strong> 44,431 kWh</p>
+                    <p><strong>Usage:</strong> 1,247 kWh</p>
+                    <hr>
+                    <p><strong>Energy Charge:</strong> $106.00</p>
+                    <p><strong>Delivery Charge:</strong> $15.45</p>
+                    <p><strong>Taxes and Fees:</strong> $6.00</p>
+                    <hr>
+                    <h4><strong>Total Amount Due: $127.45</strong></h4>
+                    <p><strong>Payment Due Date:</strong> September 15, 2025</p>
+                </div>
+                <button class="btn" onclick="payBill()">💳 Pay This Bill</button>
+            `);
+        }
+
+        function reportOutage() {
+            // Switch to outages tab
+            showInterface('customer');
+            showCustomerTab('outages');
+            showNotification('Please fill out the outage report form', 'info');
+        }
+
+        function submitOutageReport() {
+            const outageType = document.getElementById('outage-type').value;
+            const description = document.getElementById('outage-description').value.trim();
+            
+            if (!description) {
+                showNotification('Please provide a description of the outage', 'error');
+                return;
+            }
+            
+            const reportId = 'RPT-' + Date.now().toString().slice(-8);
+            
+            showModal('✅ Outage Report Submitted', `
+                <div class="alert alert-success">
+                    <h4>Outage Report Submitted Successfully!</h4>
+                    <p><strong>Report ID:</strong> ${reportId}</p>
+                    <p><strong>Type:</strong> ${outageType}</p>
+                    <p><strong>Submitted:</strong> ${getCurrentTime()}</p>
+                    <p>You will receive updates via email and SMS as crews are dispatched to resolve the issue.</p>
+                </div>
+            `);
+            
+            // Clear form
+            document.getElementById('outage-description').value = '';
+            
+            showNotification('Outage report submitted successfully!', 'success');
+        }
+
+        function viewOutageMap() {
+            showNotification('Opening outage map...', 'info');
+        }
+
+        function payBill() {
+            showModal('💳 Bill Payment', `
+                <div class="form-group">
+                    <label>Amount to Pay:</label>
+                    <input type="text" value="$127.45" readonly style="font-weight: bold; color: #27ae60;">
+                </div>
+                <div class="form-group">
+                    <label>Payment Method:</label>
+                    <select id="payment-method">
+                        <option value="credit">Credit Card</option>
+                        <option value="debit">Debit Card</option>
+                        <option value="bank">Bank Account</option>
+                        <option value="paypal">PayPal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Card Number:</label>
+                    <input type="text" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-group">
+                    <label>Expiry Date:</label>
+                    <input type="text" placeholder="MM/YY" style="width: 100px; display: inline-block;">
+                    <label style="margin-left: 20px;">CVV:</label>
+                    <input type="text" placeholder="123" style="width: 80px; display: inline-block;">
+                </div>
+                <button class="btn" onclick="processPayment()">💳 Process Payment</button>
+            `);
+        }
+
+        function processPayment() {
+            showNotification('Processing payment...', 'info');
+            
+            setTimeout(() => {
+                closeModal();
+                showNotification('Payment processed successfully! Thank you for your payment.', 'success');
+            }, 2000);
+        }
+
+        function viewDetailedBill() {
+            viewBill();
+        }
+
+        function emailBill() {
+            showNotification('Bill has been sent to your email address', 'success');
+        }
+
+        function saveCustomerProfile() {
+            showNotification('Profile updated successfully!', 'success');
+        }
+
+        function changePassword() {
+            showModal('🔒 Change Password', `
+                <div class="form-group">
+                    <label>Current Password:</label>
+                    <input type="password" placeholder="Enter current password">
+                </div>
+                <div class="form-group">
+                    <label>New Password:</label>
+                    <input type="password" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password:</label>
+                    <input type="password" placeholder="Confirm new password">
+                </div>
+                <button class="btn" onclick="updatePassword()">🔒 Update Password</button>
+            `);
+        }
+
+        function updatePassword() {
+            showNotification('Password updated successfully!', 'success');
+            closeModal();
+        }
+
+        function contactSupport() {
+            showInterface('customer');
+            showCustomerTab('support');
+        }
+
+        function requestService() {
+            showModal('🔧 Service Request', `
+                <div class="form-group">
+                    <label>Service Type:</label>
+                    <select id="service-type">
+                        <option value="new-connection">New Connection</option>
+                        <option value="meter-reading">Meter Reading</option>
+                        <option value="repair">Repair Service</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="disconnection">Disconnection</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea rows="4" placeholder="Please describe the service needed..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Preferred Date:</label>
+                    <input type="date">
+                </div>
+                <button class="btn" onclick="submitServiceRequest()">📋 Submit Request</button>
+            `);
+        }
+
+        function submitServiceRequest() {
+            showNotification('Service request submitted successfully! You will be contacted within 24 hours.', 'success');
+            closeModal();
+        }
+
+        // Support functions
+        function callSupport() {
+            showNotification('Redirecting to phone dialer: 1-800-POWER-ON', 'info');
+        }
+
+        function startChat() {
+            showModal('💬 Live Chat Support', `
+                <div style="height: 300px; border: 1px solid #ddd; padding: 10px; overflow-y: auto; background: #f9f9f9;">
+                    <p><strong>Agent:</strong> Hello! Welcome to customer support. How can I assist you today?</p>
+                </div>
+                <div class="form-group" style="margin-top: 10px;">
+                    <input type="text" id="chat-input" placeholder="Type your message..." style="width: 80%; display: inline-block;">
+                    <button class="btn" onclick="sendChatMessage()" style="width: 18%; display: inline-block;">Send</button>
+                </div>
+            `);
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message) {
+                showNotification('Message sent to customer support', 'success');
+                input.value = '';
+            }
+        }
+
+        function emailSupport() {
+            showModal('📧 Email Support', `
+                <div class="form-group">
+                    <label>Subject:</label>
+                    <input type="text" placeholder="Enter subject">
+                </div>
+                <div class="form-group">
+                    <label>Message:</label>
+                    <textarea rows="6" placeholder="Describe your issue..."></textarea>
+                </div>
+                <button class="btn" onclick="sendSupportEmail()">📧 Send Email</button>
+            `);
+        }
+
+        function sendSupportEmail() {
+            showNotification('Your message has been sent to customer support. You will receive a response within 24 hours.', 'success');
+            closeModal();
+        }
+
+        function submitTicket() {
+            showModal('🎫 Create Support Ticket', `
+                <div class="form-group">
+                    <label>Category:</label>
+                    <select>
+                        <option>Billing Issue</option>
+                        <option>Outage Report</option>
+                        <option>Service Request</option>
+                        <option>Technical Problem</option>
+                        <option>Account Question</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Priority:</label>
+                    <select>
+                        <option value="low">Low</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Subject:</label>
+                    <input type="text" placeholder="Brief description">
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea rows="5" placeholder="Detailed description..."></textarea>
+                </div>
+                <button class="btn" onclick="createTicket()">🎫 Create Ticket</button>
+            `);
+        }
+
+        function createTicket() {
+            const ticketId = 'TKT-' + Date.now().toString().slice(-8);
+            showNotification(`Support ticket created successfully! Ticket ID: ${ticketId}`, 'success');
+            closeModal();
+        }
+
+        // Admin interface functions
+        function updateAdminInterface() {
+            updateSystemLogs();
+        }
+
+        function updateSystemLogs() {
+            const logs = document.getElementById('system-logs');
+            const currentTime = getCurrentTime();
+            
+            // Add new log entry
+            const newLog = document.createElement('p');
+            newLog.textContent = `📊 ${currentTime} - Dashboard updated`;
+            logs.insertBefore(newLog, logs.firstChild);
+            
+            // Keep only last 10 entries
+            while (logs.children.length > 10) {
+                logs.removeChild(logs.lastChild);
+            }
+        }
+
+        function saveSystemSettings() {
+            showNotification('System settings saved successfully!', 'success');
+        }
+
+        function restartSystem() {
+            showNotification('System restart initiated...', 'warning');
+            setTimeout(() => {
+                showNotification('System restarted successfully!', 'success');
+            }, 3000);
+        }
+
+        function addUser() {
+            showModal('➕ Add New User', `
+                <div class="form-group">
+                    <label>User Name:</label>
+                    <input type="text" placeholder="Enter user name">
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label>Role:</label>
+                    <select>
+                        <option value="admin">Administrator</option>
+                        <option value="crew">Crew Member</option>
+                        <option value="supervisor">Supervisor</option>
+                        <option value="customer">Customer Service</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" placeholder="Enter password">
+                </div>
+                <button class="btn" onclick="createUser()">➕ Create User</button>
+            `);
+        }
+
+        function createUser() {
+            showNotification('User created successfully!', 'success');
+            closeModal();
+        }
+
+        function refreshLogs() {
+            showNotification('Refreshing system logs...', 'info');
+            setTimeout(() => {
+                updateSystemLogs();
+                showNotification('Logs refreshed successfully!', 'success');
+            }, 1000);
+        }
+
+        function exportLogs() {
+            showNotification('Exporting system logs...', 'info');
+            setTimeout(() => {
+                showNotification('Logs exported successfully!', 'success');
+            }, 1500);
+        }
+
+        // Modal functions
+        function showModal(title, content) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = content;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Detail view functions
+        function viewOutageDetails(serviceId) {
+            const outage = systemState.outages.find(o => o.serviceId === serviceId);
+            if (outage) {
+                showModal('📋 Outage Details', `
+                    <div class="alert alert-info">
+                        <h4>Outage Information</h4>
+                        <p><strong>Service ID:</strong> ${outage.serviceId}</p>
+                        <p><strong>Customer:</strong> ${outage.customer}</p>
+                        <p><strong>Component:</strong> ${outage.component}</p>
+                        <p><strong>Status:</strong> ${outage.status}</p>
+                        <p><strong>Detection Time:</strong> ${outage.detectionTime}</p>
+                        <p><strong>Assigned Crew:</strong> ${outage.assignedCrew}</p>
+                        <p><strong>ETA:</strong> ${outage.eta}</p>
+                    </div>
+                    <button class="btn btn-info" onclick="viewAIAnalysis('${serviceId}')">🤖 View AI Analysis</button>
+                `);
+            }
+        }
+
+        function viewAIAnalysis(serviceId) {
+            showModal('🤖 AI Analysis', `
+                <div class="alert alert-success">
+                    <h4>SEVERITY ASSESSMENT</h4>
+                    <p>• High priority outage detected - requires immediate attention</p>
+                    <p>• Component failure can cause significant service disruption</p>
+                </div>
+                <div class="alert alert-warning">
+                    <h4>ROOT CAUSE ANALYSIS</h4>
+                    <p>• Possible equipment overload or weather-related damage</p>
+                    <p>• Site inspection required for accurate diagnosis</p>
+                </div>
+                <div class="alert alert-info">
+                    <h4>IMMEDIATE ACTIONS</h4>
+                    <p>• Dispatch nearest available crew with proper equipment</p>
+                    <p>• Isolate affected equipment to prevent cascading failures</p>
+                    <p>• Notify customers of estimated restoration time</p>
+                </div>
+                <div class="alert alert-info">
+                    <h4>CREW DEPLOYMENT STRATEGY</h4>
+                    <p>• Assign specialized crew with high-voltage expertise</p>
+                    <p>• Ensure backup crew availability for complex repairs</p>
+                </div>
+            `);
+        }
+
+        function viewCrewDetails(crewId) {
+            const crew = systemState.crews.find(c => c.crewId === crewId);
+            if (crew) {
+                showModal('👷 Crew Details', `
+                    <div class="alert alert-info">
+                        <h4>Crew Information</h4>
+                        <p><strong>Crew ID:</strong> ${crew.crewId}</p>
+                        <p><strong>Name:</strong> ${crew.name}</p>
+                        <p><strong>Status:</strong> <span class="status-indicator ${getStatusClass(crew.status)}"></span>${crew.status}</p>
+                        <p><strong>Location:</strong> ${crew.location}</p>
+                        <p><strong>Current Assignment:</strong> ${crew.assignment}</p>
+                        <p><strong>Performance Rating:</strong> ${crew.performance}</p>
+                    </div>
+                `);
+            }
+        }
+
+        function assignCrew(crewId) {
+            showNotification(`Crew ${crewId} assigned to new outage`, 'success');
+        }
+
+        function updateAssignmentStatus(serviceId) {
+            showNotification(`Assignment ${serviceId} status updated`, 'success');
+        }
+
+        function viewLocation(serviceId) {
+            showNotification(`Opening location for ${serviceId}`, 'info');
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification('Advanced Outage Management System loaded successfully!', 'success');
+            updateDashboard();
+            
+            // Start real-time monitoring simulation
+            setInterval(() => {
+                if (systemState.monitoring && document.getElementById('dashboard').classList.contains('active')) {
+                    updateSystemLogs();
+                }
+            }, 10000); // Update every 10 seconds
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
